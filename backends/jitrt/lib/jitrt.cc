@@ -44,7 +44,7 @@
 #include "mlir/ExecutionEngine/OptUtils.h"
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/IR/MLIRContext.h"
-#include "mlir/Parser.h"
+#include "mlir/Parser/Parser.h"
 #include "mlir/Pass/PassManager.h"
 #include "mlir/Support/LogicalResult.h"
 #include "mlir/Target/LLVMIR/Export.h"
@@ -716,7 +716,7 @@ JitCompilationContext::JitCompilationContext(CompilationOptions opts,
   source_mgr_.AddNewSourceBuffer(
       llvm::MemoryBuffer::getMemBuffer(mlir_module, "jitrt.kernel"),
       llvm::SMLoc());
-  module_ = mlir::parseSourceFile(source_mgr_, context_.get());
+  module_ = mlir::parseSourceFile<mlir::ModuleOp>(source_mgr_, context_.get());
   if (module_) entrypoint_ = module_->lookupSymbol<mlir::FuncOp>(entrypoint);
 }
 

@@ -31,7 +31,7 @@
 #include "mlir/IR/SymbolTable.h"
 #include "mlir/Pass/Pass.h"
 #include "mlir/Pass/PassRegistry.h"
-#include "mlir/Support/MlirOptMain.h"
+#include "mlir/Tools/mlir-opt/MlirOptMain.h"
 #include "mlir/Transforms/DialectConversion.h"
 #include "tfrt/basic_kernels/opdefs/tfrt_base.h"
 #include "tfrt/gpu/kernels/gpu_ops.h"
@@ -80,7 +80,7 @@ struct TestGpuAsyncConversionPass
     target.addLegalDialect("other", "tfrt", "tfrt_gpu_conversion");
     target.addLegalOp<mlir::UnrealizedConversionCastOp>();
     target.addDynamicallyLegalOp<FuncOp>([&](FuncOp op) {
-      return none_of(op.body().getOps(),
+      return none_of(op.getBody().getOps(),
                      [&](Operation &op) { return wrap.isLegal(&op); });
     });
     if (failed(applyPartialConversion(getOperation(), target,
@@ -123,7 +123,7 @@ class TestSetEntryPointPass
       func_op = *funcs.begin();
     }
 
-    tfrt::gpu::setEntryPoint(getOperation(), *platform, func_op.sym_name(),
+    tfrt::gpu::setEntryPoint(getOperation(), *platform, func_op.getSymName(),
                              buffer_sizes_);
   }
 
